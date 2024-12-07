@@ -7,7 +7,7 @@ const Links = () => {
   const [errors, setErrors] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch all the links
+  // Fetch all links
   const fetchLinks = async () => {
     try {
       setErrors(""); // Clear previous errors
@@ -22,8 +22,10 @@ const Links = () => {
     }
   };
 
+  // Delete a link by ID
   const deleteLink = async (id) => {
     if (!window.confirm("Are you sure you want to delete this link?")) return;
+
     try {
       setErrors(""); // Clear previous errors
       setLoading(true);
@@ -46,46 +48,55 @@ const Links = () => {
       <h2 className="text-3xl font-bold text-center text-indigo-600">
         Manage Links
       </h2>
-      {errors && <p className="text-red-600 mt-4">{errors}</p>}
+      {errors && <p className="text-red-600 mt-4 text-center">{errors}</p>}
       {loading && <p className="text-gray-500 text-center">Loading...</p>}
 
       {/* Link list */}
-      <ul className="space-y-10 mt-6 container mx-auto">
+      <ul className="space-y-6 mt-6">
         {links.length > 0 ? (
           links.map((link) => (
             <li
               key={link.shortId}
               className="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-md"
             >
-              <div className="flex-1 text-center md:text-left justify-center text-clip">
-                {/* Truncate original URL */}
-                <p className="text-indigo-500 font-semibold truncate mb-2 text-base w-full overflow-hidden text-ellipsis">
-                  OriginalLinks
+              <div className="flex-1 text-center md:text-left">
+                {/* Original URL */}
+                <p className="text-indigo-600 font-medium truncate">
+                  Original Link:{" "}
+                  <a
+                    href={link.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    {/* {link.originalUrl} */}
+                  </a>
                 </p>
 
-                {/* Short ID link */}
-                <div className="overflow-x-auto w-full flex">
-                  <h1 className="text-indigo-500 font-semibold "> ShortenedLink:{" "}</h1>
+                {/* Shortened Link */}
+                <p className="text-gray-700 mt-2">
+                  Shortened Link:{" "}
                   <Link
                     to={`/analytics/${link.shortId}`}
-                    className="text-indigo-500 underline break-all inline-block w-full"
+                    className="text-indigo-500 underline break-words"
                   >
-                    {link.shortId}
+                    {link.shortUrl}
                   </Link>
-                </div>
+                </p>
               </div>
-                 {/* Delete button */}
-                 <button
-                  onClick={() => deleteLink(link.shortId)}
-                  disabled={loading}
-                  className={`mt-4 md:mt-0 px-4 py-2 rounded-lg text-white ${
-                    loading
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-red-500 hover:bg-red-700"
-                  }`}
-                >
-                  Delete
-                </button>
+
+              {/* Delete button */}
+              <button
+                onClick={() => deleteLink(link.shortId)}
+                disabled={loading}
+                className={`mt-4 md:mt-0 px-4 py-2 rounded-lg text-white ${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-red-500 hover:bg-red-700"
+                }`}
+              >
+                Delete
+              </button>
             </li>
           ))
         ) : (

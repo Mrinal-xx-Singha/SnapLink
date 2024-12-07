@@ -22,6 +22,14 @@ const createLink = async (req, res) => {
 
     const shortId = nanoid(8);
 
+    // Ensure BASE_URL is configured
+    const baseUrl = process.env.BASE_URL;
+    if (!baseUrl) {
+      return res.status(500).json({
+        error: "Server configuration error. Missing BASE_URL.",
+      });
+    }
+
     const link = new Link({
       originalUrl,
       shortId,
@@ -32,12 +40,12 @@ const createLink = async (req, res) => {
     await link.save();
 
     res.status(201).json({
-      shortUrl: `${process.env.BASE_URL}/${shortId}`,
+      shortUrl: `${baseUrl}/${shortId}`,
       shortId,
       originalUrl,
     });
   } catch (error) {
-    console.error("Error creating link:", error);
+    console.error("Error creating link:", error.stack);
     res.status(500).json({ error: "Failed to shorten URL." });
   }
 };
@@ -60,12 +68,15 @@ const redirectOriginal = async (req, res) => {
     }
 
     // Increment click count
-    link.clickCount += 1;
-    await link.save();
-
+    try {
+      link.clickCount += 1;
+      await link.save();
+    } catch (updateError) {
+      console.error("Failed to update click count:", updateError.stack);
+    }
     return res.redirect(link.originalUrl);
   } catch (error) {
-    console.error("Error during redirection:", error);
+    console.error("Error during redirection:", error.stack);
     res.status(500).json({ error: "Failed to redirect." });
   }
 };
@@ -76,7 +87,7 @@ const getAllLinks = async (req, res) => {
     const links = await Link.find().sort({ createdAt: -1 }); // Sort by most recent
     res.status(200).json(links);
   } catch (error) {
-    console.error("Error fetching links:", error);
+    console.error("Error fetching links:", error.stack);
     res.status(500).json({ error: "Failed to fetch links." });
   }
 };
@@ -99,7 +110,7 @@ const getAnalytics = async (req, res) => {
       expiresAt: link.expiresAt,
     });
   } catch (error) {
-    console.error("Error fetching analytics:", error);
+    console.error("Error fetching analytics:", error.stack);
     res.status(500).json({ error: "Failed to fetch analytics." });
   }
 };
@@ -117,7 +128,7 @@ const deleteLink = async (req, res) => {
 
     res.status(200).json({ message: "Link deleted successfully." });
   } catch (error) {
-    console.error("Error deleting link:", error);
+    console.error("Error deleting link:", error.stack);
     res.status(500).json({ error: "Failed to delete link." });
   }
 };

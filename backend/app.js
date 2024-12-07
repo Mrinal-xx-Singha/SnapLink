@@ -2,19 +2,16 @@ const express = require("express");
 const cors = require("cors");
 const dotenvConfig = require("./config/dotenvConfig.js");
 const linkRoutes = require("./routes/linkRoutes.js");
-const bodyParser = require('body-parser');
 
-dotenvConfig(); //Load environment variables
+dotenvConfig(); // Load environment variables
 
 const app = express();
 
-//Middleware
+// Middleware
+app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(express.json()); // Parse JSON payloads
 
-app.use(cors());
-app.use(express.json());
-app.use(bodyParser.json());
-
-//Routes
+// Routes
 app.use("/api/links", linkRoutes);
 
 // 404 Handling for undefined routes

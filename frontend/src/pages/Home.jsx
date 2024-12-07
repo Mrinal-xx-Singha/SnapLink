@@ -9,7 +9,6 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
 
   const validateUrl = (url) => {
-    // Enhanced URL validation
     const urlPattern =
       /^(https?:\/\/)?([\w\-]+\.)+[\w]{2,}(\/[\w\-./?%&=]*)?$/i;
     return urlPattern.test(url);
@@ -34,10 +33,16 @@ const Home = () => {
         originalUrl: longUrl,
         expiresAt: expiresAt || null,
       });
+
+      console.log(res);
+      
       setShortUrl(res.data.shortUrl);
-      setError(""); // Clear any error after success
+      setError(""); // Clear error after success
     } catch (err) {
-      setError("Failed to shorten URL. Please try again.");
+      console.error(err.response?.data || err.message);
+      setError(
+        err.response?.data?.error || "Failed to shorten URL. Please try again."
+      );
     } finally {
       setLoading(false);
     }
