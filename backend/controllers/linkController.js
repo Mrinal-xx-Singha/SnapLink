@@ -40,7 +40,7 @@ const createLink = async (req, res) => {
     await link.save();
 
     res.status(201).json({
-      shortUrl: `${baseUrl}/${shortId}`,
+      shortUrl: `${baseUrl}/api/links/${shortId}`,
       shortId,
       originalUrl,
     });
@@ -53,6 +53,8 @@ const createLink = async (req, res) => {
 // Redirect to the original URL
 const redirectOriginal = async (req, res) => {
   const { shortId } = req.params;
+
+  console.log(shortId);
 
   try {
     const link = await Link.findOne({ shortId });
@@ -74,7 +76,8 @@ const redirectOriginal = async (req, res) => {
     } catch (updateError) {
       console.error("Failed to update click count:", updateError.stack);
     }
-    return res.redirect(link.originalUrl);
+
+  res.redirect(link.originalUrl)
   } catch (error) {
     console.error("Error during redirection:", error.stack);
     res.status(500).json({ error: "Failed to redirect." });

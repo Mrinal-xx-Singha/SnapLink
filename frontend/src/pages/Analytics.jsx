@@ -15,6 +15,10 @@ const Analytics = () => {
         const res = await axios.get(
           `http://localhost:3000/api/links/analytics/${shortId}`
         );
+        console.log(shortId);
+        
+        console.log(res.data);
+        
         setAnalytics(res.data);
       } catch (error) {
         console.error("Error fetching analytics:", error);

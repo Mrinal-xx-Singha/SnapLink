@@ -10,7 +10,7 @@ const Home = () => {
 
   const validateUrl = (url) => {
     const urlPattern =
-      /^(https?:\/\/)?([\w\-]+\.)+[\w]{2,}(\/[\w\-./?%&=]*)?$/i;
+      /^https?:\/\/\S+/;
     return urlPattern.test(url);
   };
 
@@ -31,11 +31,8 @@ const Home = () => {
       setLoading(true);
       const res = await axios.post("http://localhost:3000/api/links/shorten", {
         originalUrl: longUrl,
-        expiresAt: expiresAt || null,
+        expiresAt: expiresAt,
       });
-
-      console.log(res);
-      
       setShortUrl(res.data.shortUrl);
       setError(""); // Clear error after success
     } catch (err) {
@@ -53,6 +50,8 @@ const Home = () => {
     alert("Shortened URL copied to clipboard!");
   };
 
+  console.log(shortUrl);
+  
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-3xl font-bold text-center text-indigo-600">
@@ -91,7 +90,7 @@ const Home = () => {
         </button>
         {error && <p className="text-red-500">{error}</p>}
         {shortUrl && (
-          <div className="text-green-500 break-all">
+          <div className="bg-green-100 text-green-700 p-4 rounded-lg">
             <p>
               Shortened URL:{" "}
               <a

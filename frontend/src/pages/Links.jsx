@@ -13,6 +13,8 @@ const Links = () => {
       setErrors(""); // Clear previous errors
       setLoading(true);
       const res = await axios.get("http://localhost:3000/api/links");
+      console.log(res.data);
+      
       setLinks(res.data);
     } catch (error) {
       console.error("Error fetching links:", error);
@@ -69,7 +71,7 @@ const Links = () => {
                     rel="noopener noreferrer"
                     className="underline"
                   >
-                    {/* {link.originalUrl} */}
+                    {link.originalUrl}
                   </a>
                 </p>
 
@@ -80,7 +82,7 @@ const Links = () => {
                     to={`/analytics/${link.shortId}`}
                     className="text-indigo-500 underline break-words"
                   >
-                    {link.shortUrl}
+                    {link.shortId}
                   </Link>
                 </p>
               </div>
